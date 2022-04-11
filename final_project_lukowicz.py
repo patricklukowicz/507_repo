@@ -4,6 +4,9 @@
 #########################################
 
 import scrape_cache
+import scrape_cache_2
+import plotly.graph_objects as go
+import flask
 
 class Vertex:
     def __init__(self, key):
