@@ -6,8 +6,7 @@ import json
 
 BASE_URL = 'https://musicbrainz.org'
 MC5_PATH = '/artist/08b736bb-1c82-40b4-8b0b-49e2182a067a'
-STOOGES_PATH = '/artist/794c6bf2-3241-416f-9b8f-24e2d84a1c4b'
-CACHE_FILE_NAME = 'cacheMB_Scrape.json'
+CACHE_FILE_NAME = 'cacheMC5_Scrape.json'
 CACHE_DICT = {}
 
 headers = {'User-Agent': 'SI507 Final Project - Python Web Scraping','From': 'lukowicz@umich.edu','MusicBrainz-Page': 'https://musicbrainz.org/artist/08b736bb-1c82-40b4-8b0b-49e2182a067a'}
@@ -44,7 +43,7 @@ def make_url_request_using_cache(url, cache):
 
 def pull_artist_urls(soup):
     # Extract sidebar divs where genres are located
-    sidebar_tags_parent = soup1.find('div', class_='genre-list')
+    sidebar_tags_parent = soup.find('div', class_='genre-list')
     tags_a = sidebar_tags_parent.find_all('a')
 
     # Extract genre urls
@@ -55,7 +54,7 @@ def pull_artist_urls(soup):
         genre_urls.append(genre_url)
 
     # Extract artist tab urls and pull releases and relationships links
-    artist_tabs_parent = soup1.find('div', class_='tabs')
+    artist_tabs_parent = soup.find('div', class_='tabs')
     tabs = artist_tabs_parent.find_all('li')
     artist_info_urls = []
     for tab in tabs:
@@ -75,19 +74,11 @@ CACHE_DICT = load_cache()
 
 # Make the soup for the MC5 Artist Page
 MC5_page_url = BASE_URL + MC5_PATH
-url_text1 = make_url_request_using_cache(MC5_page_url, CACHE_DICT)
-response1 = requests.get(MC5_page_url)
-soup1 = BeautifulSoup(response1.text, 'html.parser')
-MC5_info = pull_artist_urls(soup1)
-
-# Make the soup for the Stooges Artist page
-Stooges_page_url = BASE_URL + STOOGES_PATH
-url_text2 = make_url_request_using_cache(Stooges_page_url, CACHE_DICT)
-response2 = requests.get(Stooges_page_url)
-soup2 = BeautifulSoup(response2.text, 'html.parser')
-Stooges_info = pull_artist_urls(soup2)
+url_text = make_url_request_using_cache(MC5_page_url, CACHE_DICT)
+response = requests.get(MC5_page_url)
+soup = BeautifulSoup(response.text, 'html.parser')
+MC5_info = pull_artist_urls(soup)
 
 print(MC5_info)
-print(Stooges_info) # This is returning the MC5 urls a second time instead of Stooges; cache issue?
 
 print('-' * 50) # seperator
