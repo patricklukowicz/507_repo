@@ -3,10 +3,10 @@
 ##### Uniqname: lukowicz            #####
 #########################################
 
-import scrape_cache
-import scrape_cache_2
 import plotly.graph_objects as go
-import flask
+import scrape_cache as scrape
+import scrape_cache_2 as scrape2
+from collections import deque
 
 class Vertex:
     def __init__(self, key):
@@ -79,3 +79,38 @@ class Queue:
     def size(self):
         return len(self.items)
 
+def BFS(startpoint, endpoint, graph):
+    q = deque()
+    q.append(startpoint)
+
+    while q:
+        startpoint = q.popleft()
+        print(startpoint)
+        for edge in graph.VertList[startpoint]:
+            if not endpoint[edge]:
+                edge = True
+                q.append(edge)
+
+    return q
+
+if __name__ == "__main__":
+    MC5_Band = scrape.MC5_info
+    Detroit_Bands = scrape2.band_urls
+    xvals = [MC5_Band]
+    yvals = [Detroit_Bands]
+    bar_data = go.Bar(x=xvals, y=yvals)
+    basic_layout = go.Layout(title='Detroit Music Relationships')
+    fig = go.Figure(data=bar_data, layout=basic_layout)
+
+    while True:
+        bad_queries = ['', ' ']
+        query = str(input('Enter a Detroit band or "exit" to quit: '))
+        if query in bad_queries:
+            print("Ope, invalid entry, please re-enter search term.")
+            continue
+        if query == "exit":
+            print("Bye!")
+            break
+        if query.isascii():
+            fig.show()
+            continue
